@@ -1,4 +1,23 @@
-export type ViewerMode = "hazard" | "heatRisk";
+export type ViewerMode = "hazard" | "heatRisk" | "wards" | "quadrant";
+
+export type RawWardData = {
+  wardId: string;
+  wardName: string;
+  subcounty: string;
+  pixelCount: number;
+  bins: number[];
+  totalPopulation: number;
+};
+
+export type WardQuadrantPoint = {
+  wardId: string;
+  wardName: string;
+  subcounty: string;
+  population: number;
+  heatDays: number;
+  personDays: number;
+  quadrant: "hot-dense" | "hot-sparse" | "cool-dense" | "cool-sparse";
+};
 
 export type ThresholdStats = {
   min: number;
@@ -16,24 +35,12 @@ export type RasterGridMetadata = {
   nodata: number;
 };
 
-export type BasePixelChunkMetadata = {
-  pathTemplate: string;
-  chunkSize: number;
-  interleave: "pixel";
-  chunk_rows: number;
-  chunk_cols: number;
-  chunk_count: number;
+export type HazardPixelQueryConfig = {
+  endpoint: string;
 };
 
-export type HazardPixelChunkMetadata = BasePixelChunkMetadata & {
-  kind: "distribution";
-  bands: number;
-};
-
-export type RiskPixelChunkMetadata = BasePixelChunkMetadata & {
-  kind: "riskDetail";
-  fields: string[];
-  dtype: "float32";
+export type RiskPixelQueryConfig = {
+  endpoint: string;
 };
 
 export type ModeMetadataBase = {
@@ -59,14 +66,14 @@ export type ModeMetadataBase = {
 export type HazardModeMetadata = ModeMetadataBase & {
   thresholdModeLabel: string;
   definition: string;
-  pixelQuery: HazardPixelChunkMetadata;
+  pixelQuery: HazardPixelQueryConfig;
   binEdges: number[];
   binLabels: string[];
 };
 
 export type HeatRiskModeMetadata = ModeMetadataBase & {
   formula: string;
-  pixelQuery: RiskPixelChunkMetadata;
+  pixelQuery: RiskPixelQueryConfig;
 };
 
 export type ViewerMetadata = {
@@ -107,4 +114,12 @@ export type HeatRiskPixelDetail = {
   population: number;
   vulnerability: number;
   heatRisk: number;
+};
+
+export type WardAggregate = {
+  wardId: string;
+  wardName: string;
+  subcounty: string;
+  pixelCount: number;
+  bins: number[];
 };

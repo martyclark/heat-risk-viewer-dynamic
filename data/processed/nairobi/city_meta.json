@@ -1,0 +1,55 @@
+{
+  "cityKey": "nairobi",
+  "cityLabel": "Nairobi",
+  "hazardCog": "/Users/martynclark/Documents/gitHub/heat-risk-viewer/data/processed/nairobi/hazard_cube.tif",
+  "hazardDistributionTif": "/Users/martynclark/Documents/gitHub/heat-risk-viewer/data/raw/hazard/temp_dist_nairobi.tif",
+  "populationTif": "/Users/martynclark/Documents/gitHub/heat-risk-viewer/data/raw/population/ken_pop_nairobi_100m.tif",
+  "populationBand": 1,
+  "populationNodata": -99999.0,
+  "vulnerabilityTif": "/Users/martynclark/Documents/gitHub/heat-risk-viewer/data/raw/vulnerability/population_composite_nairobi.tif",
+  "vulnerabilityBand": 5,
+  "vulnerabilityNodata": -9999.0,
+  "hazardNodata": -1.0,
+  "riskNodata": -9999.0,
+  "hazardGrid": {
+    "width": 1601,
+    "height": 1004,
+    "transform": [
+      0.00026949335249730786,
+      0.0,
+      36.668882500898306,
+      0.0,
+      -0.00026949335249730515,
+      -1.161785842615882
+    ],
+    "bounds": [
+      36.668882500898306,
+      -1.4323571685231764,
+      37.100341358246496,
+      -1.161785842615882
+    ],
+    "crs": "EPSG:4326",
+    "nodata": -1.0,
+    "bands": 50
+  },
+  "riskGrid": {
+    "width": 638,
+    "height": 446,
+    "transform": [
+      0.00083333333,
+      0.0,
+      36.618332466860004,
+      0.0,
+      -0.00083333333,
+      -1.110832992890014
+    ],
+    "bounds": [
+      36.618332466860004,
+      -1.482499658070014,
+      37.1499991314,
+      -1.110832992890014
+    ],
+    "crs": "EPSG:4326",
+    "nodata": -9999.0
+  }
+}

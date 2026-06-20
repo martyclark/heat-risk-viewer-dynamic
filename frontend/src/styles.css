@@ -243,8 +243,9 @@ select {
 }
 
 .stat-card strong {
-  font-family: "Fraunces", serif;
+  font-family: "IBM Plex Sans", sans-serif;
   font-size: 24px;
+  font-weight: 700;
   color: #10233d;
 }
 
@@ -351,6 +352,90 @@ select {
   stroke: rgba(16, 35, 61, 0.9);
   stroke-width: 2;
   stroke-dasharray: 8 6;
+}
+
+.mode-toggle.four-col {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.quadrant-chart-wrap {
+  display: grid;
+  gap: 0;
+  height: 100%;
+  padding: 24px 26px 20px;
+  overflow: auto;
+}
+
+.quadrant-header {
+  margin-bottom: 16px;
+}
+
+.quadrant-header h2 {
+  margin: 0 0 14px;
+  font-family: "Fraunces", serif;
+  font-size: clamp(22px, 2.4vw, 34px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #10233d;
+}
+
+.quadrant-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quadrant-count-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px 5px 8px;
+  border-radius: 999px;
+  border: 1.5px solid;
+  background: white;
+}
+
+.quadrant-count-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.quadrant-count-label {
+  font-size: 12px;
+  color: #3f5873;
+  font-weight: 500;
+}
+
+.quadrant-count-n {
+  font-size: 13px;
+  font-weight: 700;
+  color: #10233d;
+  margin-left: 2px;
+}
+
+.quadrant-svg-wrap {
+  flex: 1;
+}
+
+.quadrant-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.quadrant-region-label {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.quadrant-loading {
+  display: grid;
+  place-items: center;
+  min-height: 400px;
+  color: var(--copy-muted);
+  font-size: 15px;
 }
 
 @media (max-width: 1100px) {

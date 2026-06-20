@@ -1,4 +1,4 @@
-import type { ViewerMetadata, ViewerMode } from "./types";
+import type { RawWardData, ViewerMetadata, ViewerMode, WardQuadrantPoint } from "./types";
 
 export type GridTransform = [number, number, number, number, number, number];
 
@@ -32,8 +32,8 @@ export function resolveTemplate(template: string, values: Record<string, string 
   );
 }
 
-export function modeTileUrl(metadata: ViewerMetadata, mode: ViewerMode, threshold: number): string {
-  return `/data/${resolveTemplate(metadata.modes[mode].tilesPathTemplate, {
+export function modeTileUrl(metadata: ViewerMetadata, mode: "hazard" | "heatRisk", threshold: number): string {
+  return `/${resolveTemplate(metadata.modes[mode].tilesPathTemplate, {
     threshold,
     z: "{z}",
     x: "{x}",
@@ -41,19 +41,14 @@ export function modeTileUrl(metadata: ViewerMetadata, mode: ViewerMode, threshol
   })}`;
 }
 
-export function hazardPixelChunkUrl(metadata: ViewerMetadata, chunkRow: number, chunkCol: number): string {
-  return `/data/${resolveTemplate(metadata.modes.hazard.pixelQuery.pathTemplate, {
-    row: chunkRow,
-    col: chunkCol,
-  })}`;
+export function hazardPixelUrl(metadata: ViewerMetadata, lng: number, lat: number): string {
+  const endpoint = metadata.modes.hazard.pixelQuery.endpoint;
+  return `${endpoint}?lng=${lng}&lat=${lat}`;
 }
 
-export function riskPixelChunkUrl(metadata: ViewerMetadata, threshold: number, chunkRow: number, chunkCol: number): string {
-  return `/data/${resolveTemplate(metadata.modes.heatRisk.pixelQuery.pathTemplate, {
-    threshold,
-    row: chunkRow,
-    col: chunkCol,
-  })}`;
+export function riskPixelUrl(metadata: ViewerMetadata, lng: number, lat: number, threshold: number): string {
+  const endpoint = metadata.modes.heatRisk.pixelQuery.endpoint;
+  return `${endpoint}?lng=${lng}&lat=${lat}&threshold=${threshold}`;
 }
 
 export function lngLatFromRasterCell(
@@ -92,4 +87,50 @@ export function pixelGeometry(
       [topLeft.lng, topLeft.lat],
     ],
   };
+}
+
+export async function fetchAllWardsRaw(cityKey: string): Promise<RawWardData[]> {
+  const response = await fetch(`/api/${cityKey}/aggregate/all-wards`);
+  if (!response.ok) throw new Error("Failed to load ward aggregates");
+  return response.json() as Promise<RawWardData[]>;
+}
+
+function listMedian(values: number[]): number {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 === 0 ? (sorted[mid - 1] + sorted[mid]) / 2 : sorted[mid];
+}
+
+function assignQuadrant(
+  heatDays: number,
+  population: number,
+  medianHeatDays: number,
+  medianPopulation: number,
+): WardQuadrantPoint["quadrant"] {
+  const hot = heatDays >= medianHeatDays;
+  const dense = population >= medianPopulation;
+  if (hot && dense) return "hot-dense";
+  if (hot && !dense) return "hot-sparse";
+  if (!hot && dense) return "cool-dense";
+  return "cool-sparse";
+}
+
+export function computeQuadrantPoints(wards: RawWardData[], threshold: number): WardQuadrantPoint[] {
+  const points = wards.map((w) => {
+    const heatDays = hazardDaysForThreshold(w.bins, threshold);
+    return {
+      wardId: w.wardId,
+      wardName: w.wardName,
+      subcounty: w.subcounty,
+      population: w.totalPopulation,
+      heatDays,
+      personDays: w.totalPopulation * heatDays,
+    };
+  });
+  const medianHeatDays = listMedian(points.map((p) => p.heatDays));
+  const medianPopulation = listMedian(points.map((p) => p.population));
+  return points.map((p) => ({
+    ...p,
+    quadrant: assignQuadrant(p.heatDays, p.population, medianHeatDays, medianPopulation),
+  }));
 }

@@ -2,3 +2,5 @@ mercantile
 numpy
 Pillow
 rasterio
+fastapi
+uvicorn[standard]

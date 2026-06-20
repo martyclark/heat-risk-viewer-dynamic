@@ -4,9 +4,11 @@ type DistributionChartProps = {
   distribution: HazardPixelDistribution;
   threshold: number;
   labels: string[];
+  heading?: { title: string; subtitle: string };
+  summaryExtra?: { label: string; value: string };
 };
 
-export function DistributionChart({ distribution, threshold, labels }: DistributionChartProps) {
+export function DistributionChart({ distribution, threshold, labels, heading, summaryExtra }: DistributionChartProps) {
   const width = 580;
   const height = 220;
   const margin = { top: 16, right: 18, bottom: 56, left: 42 };
@@ -19,21 +21,21 @@ export function DistributionChart({ distribution, threshold, labels }: Distribut
   return (
     <section className="panel-block">
       <div className="panel-heading">
-        <span>Pixel distribution</span>
-        <small>
-          row {distribution.row}, col {distribution.col}
-        </small>
+        <span>{heading?.title ?? "Pixel distribution"}</span>
+        <small>{heading?.subtitle ?? `row ${distribution.row}, col ${distribution.col}`}</small>
       </div>
       <div className="pixel-summary">
+        {summaryExtra ? (
+          <div><span>{summaryExtra.label}</span><strong>{summaryExtra.value}</strong></div>
+        ) : (
+          <div>
+            <span>Coordinates</span>
+            <strong>{distribution.lng.toFixed(5)}, {distribution.lat.toFixed(5)}</strong>
+          </div>
+        )}
         <div>
-          <span>Coordinates</span>
-          <strong>
-            {distribution.lng.toFixed(5)}, {distribution.lat.toFixed(5)}
-          </strong>
-        </div>
-        <div>
-          <span>Current hazard</span>
-          <strong>{distribution.hazardDays} days</strong>
+          <span>Mean hazard</span>
+          <strong>{distribution.hazardDays.toFixed(1)} days</strong>
         </div>
       </div>
       <svg className="distribution-chart" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Pixel temperature distribution bar chart">

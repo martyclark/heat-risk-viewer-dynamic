@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "npm --prefix frontend run dev",
     "build": "npm --prefix frontend run build",
-    "test": "python -m unittest tests.test_build_hazard_tiles -v && npm --prefix frontend run test",
-    "data:build": "python scripts/build_hazard_tiles.py --clean"
+    "test": "npm --prefix frontend run test",
+    "backend": "/Users/martynclark/miniforge3/envs/heat-risk-viewer/bin/uvicorn backend.main:app --reload --port 8000",
+    "data:prepare": "/Users/martynclark/miniforge3/envs/heat-risk-viewer/bin/python scripts/build_cogs.py"
   }
 }
